@@ -3,6 +3,7 @@
 	September 22nd, 2015
 	Multiply-Shift Problem 1
 	Convert Months to Years
+	88/12
 */
 
 .global _start

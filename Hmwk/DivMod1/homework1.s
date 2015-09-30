@@ -9,8 +9,8 @@
 _start:
 	/*Initialize the Registers*/
 	MOV R1, #0		@Result of R3/R2
-	MOV R2, #6		@Denominator
-	MOV R3, #55		@Numerator
+	MOV R2, #3		@Denominator
+	MOV R3, #16		@Numerator
 	/*Loop and Keep Subtracting Off the Denominator*/
 	MOV R0, R3		@Place the Numerator in R0
 	_while_R0_GE_R2:	@Loop until the Division is over

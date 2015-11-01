@@ -100,7 +100,7 @@ functiona:
 
 afirst:
 	/* Calculate */
-	MOV R1, #30		@Cost Register
+	MOV R1, #30			@cost
 	LDR R0, address_costdisplay
 	BL printf
 	BAL exit
@@ -145,14 +145,126 @@ functionb:
 	/* Package B */
 	LDR R0, address_msgb
 	BL printf
+	/* Display Message */
+	LDR R0, address_msghours
+	BL printf
+	/* Input Hours */
+	LDR R0, address_scand
+	LDR R1, address_hours
+	BL scanf
+	/* Compare Hours */
+	LDR R1, address_hours
+	LDR R1, [R1]
+	CMP R1, #22
+	BLE bfirst
+	CMP R1, #22
+	BGT bsecond
+	BAL exit
+
+bfirst:
+	/* Calculate */
+	MOV R1, #35			@cost
+	LDR R0, address_costdisplay
+	BL printf
+	BAL exit
+
+bsecond:
+	/* Check if its greater than 44 */
+	LDR R0, address_hours
+	LDR R0, [R0]
+	CMP R0, #44
+	BGT bthird
+	/* Calculate */
+        LDR R0, address_hours           @hours
+        LDR R0, [R0]
+        MOV R1, #35                     @cost
+        MOV R2, #2
+        MOV R3, #22
+        SUB R4, R0, R3
+        MUL R2, R2, R4
+        ADD R1, R1, R2
+        /* Display Cost */
+        LDR R0, address_costdisplay
+        BL printf
+	BAL exit
+
+bthird:
+	/* Calculate */
+	LDR R0, address_hours		@hours
+	LDR R0, [R0]
+	MOV R1, #79			@cost
+	MOV R2, #44
+	MOV R3, #0
+	SUB R3, R0, R2
+	MOV R4, #4
+	MUL R4, R3
+	ADD R1, R1, R4
+	/* Display Cost */
+	LDR R0, address_costdisplay
+	BL printf
 	BAL exit
 
 functionc:
 	/* Package C */
 	LDR R0, address_msgc
 	BL printf
+	/* Display Message */
+	LDR R0, address_msghours
+	BL printf
+	/* Input Hours */
+	LDR R0, address_scand
+	LDR R1, address_hours
+	BL scanf
+	/* Compare Hours */
+	LDR R1, address_hours
+	LDR R1, [R1]
+	CMP R1, #33
+	BLE cfirst
+	CMP R1, #33
+	BGT csecond
 	BAL exit
 
+cfirst:
+	/* Calculate */
+	MOV R1, #40			@cost
+	LDR R0, address_costdisplay
+	BL printf
+	BAL exit
+
+csecond:
+	LDR R0, address_hours
+	LDR R0, [R0]
+	CMP R0, #66
+	BGT cthird
+	/* Calculate */
+        LDR R0, address_hours           @hours
+        LDR R0, [R0]
+        MOV R1, #40                     @cost
+        MOV R2, #1
+        MOV R3, #33
+        SUB R4, R0, R3
+        MUL R2, R2, R4
+        ADD R1, R1, R2
+        /* Display Cost */
+        LDR R0, address_costdisplay
+        BL printf
+	BAL exit
+
+cthird:
+	/* Calculate */
+	LDR R0, address_hours		@hours
+	LDR R0, [R0]
+	MOV R1, #73			@cost
+	MOV R2, #66
+	MOV R3, #0
+	SUB R3, R0, R2
+	MOV R4, #2
+	MUL R4, R3
+	ADD R1, R1, R4
+	/* Display Cost */
+	LDR R0, address_costdisplay
+	BL printf
+	BAL exit
 exit:
 	/* Exit */
 	LDR LR, address_return

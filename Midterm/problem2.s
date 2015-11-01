@@ -1,28 +1,49 @@
 /*	Andrew Kim
 	October 30th, 2015
 	Midterm
-	Problem 3
+	Problem 2
 */
 
 .data
 
 /* Messages */
 .balign 4
-msg1: .asciz "Type in the number you want to output from: "
+msg1: .asciz "Choose between package a, b, or c: "
 
 .balign 4
-msg2: .asciz "Output: %d\n"
+msga: .asciz "Package A Function\n"
+
+.balign 4
+msgb: .asciz "Package B Function\n"
+
+.balign 4
+msgc: .asciz "Package C Function\n"
+
+.balign 4
+msgtest: .asciz "Choice input was %c\n"
+
+.balign 4
+msghours: .asciz "Enter # of hours: "
+
+.balign 4
+costdisplay: .asciz "Monthly Cost: %d\n"
 
 /* Format Pattern */
 .balign 4
-scanp: .asciz "%d"
+scanc: .asciz "%c"
+
+.balign 4
+scand: .asciz "%d"
 
 /* Store */
 .balign 4
-input: .word 0
+choice: .word 0
 
 .balign 4
-output: .word 0
+hours: .word 0
+
+.balign 4
+cost: .word 0
 
 .balign 4
 return: .word 0
@@ -31,65 +52,125 @@ return: .word 0
 
 .global main
 main:
-	/* Exit setup */
+	/* Exit Setup */
 	LDR R1, address_return
 	STR LR, [R1]
 	/* Display Message */
 	LDR R0, address_msg1
 	BL printf
-	/* Get User Input */
-	LDR R0, address_scanp
-	LDR R1, address_input
+	/* Get Choice Input */
+	LDR R0, address_scanc
+	LDR R1, address_choice
 	BL scanf
-	/* Compare Input */
-	LDR R0, address_input
-	LDR R0, [R0]
-	CMP R0, #2
-	BLE function1
-	CMP R0, #2
-	BGT function2
+	/* Check Input */
+	LDR R0, address_msgtest
+	LDR R1, address_choice
+	LDR R1, [R1]
+	BL printf
+	/* Compare Input with Packages */
+	LDR R1, address_choice
+	LDR R1, [R1]
+	CMP R1, #'a'
+	BEQ functiona
+	CMP R1, #'b'
+	BEQ functionb
+	CMP R1, #'c'
+	BEQ functionc
+	BAL exit
 
-function1:
-	/* When input is 1 or 2 */
-	LDR R0, address_msg2
-	MOV R1, #1
+functiona:
+	/* Package A */
+	LDR R0, address_msga
+	BL printf
+	/* Display Message */
+	LDR R0, address_msghours
+	BL printf
+	/* Input Hours */
+	LDR R0, address_scand
+	LDR R1, address_hours
+	BL scanf
+	/* Compare Hours */
+	LDR R1, address_hours
+	LDR R1, [R1]
+	CMP R1, #11
+	BLE afirst
+	CMP R1, #11
+	BGT asecond
+	BAL exit
+
+afirst:
+	/* Calculate */
+	MOV R1, #30		@Cost Register
+	LDR R0, address_costdisplay
 	BL printf
 	BAL exit
 
-function2:
-	/* When input is 3 and greater */
-	/* Initialize for loop */
-	MOV R1, #2
-	/* Variables */
-	MOV R2, #1		@F2
-	MOV R3, #1		@F1
-	LDR R5, address_input
-	LDR R5, [R5]
-forloop:
-	/* Calculating within the loop */
-	MOV R4, R2
-	ADD R2, R2, R3
-	MOV R3, R4
-	/* Back to Loop */
-	ADD R1, R1, #1
-	CMP R1, R5
-	BLT forloop
-	/* Exiting forloop*/
-	MOV R1, R2
-	LDR R0, address_msg2
+asecond: 
+	/* Check if its greater than 22 */
+	LDR R0, address_hours
+	LDR R0, [R0]
+	CMP R0, #22
+	BGT athird
+	/* Calculate */
+        LDR R0, address_hours           @hours
+        LDR R0, [R0]
+        MOV R1, #30                     @cost
+        MOV R2, #3
+        MOV R3, #11
+        SUB R4, R0, R3
+        MUL R2, R2, R4
+        ADD R1, R1, R2
+        /* Display Cost */
+        LDR R0, address_costdisplay
+        BL printf
+	BAL exit
+
+athird:
+	/* Calculate */
+	LDR R0, address_hours		@hours
+	LDR R0, [R0]
+	MOV R1, #63			@cost
+	MOV R2, #22
+	MOV R3, #0
+	SUB R3, R0, R2
+	MOV R4, #6
+	MUL R4, R3
+	ADD R1, R1, R4
+	/* Display Cost */
+	LDR R0, address_costdisplay
+	BL printf
+	BAL exit
+
+functionb:
+	/* Package B */
+	LDR R0, address_msgb
+	BL printf
+	BAL exit
+
+functionc:
+	/* Package C */
+	LDR R0, address_msgc
 	BL printf
 	BAL exit
 
 exit:
+	/* Exit */
 	LDR LR, address_return
 	LDR LR, [LR]
 	BX LR
 
 address_msg1: .word msg1
-address_msg2: .word msg2
-address_scanp: .word scanp
-address_input: .word input
-address_output: .word output
+address_msgtest: .word msgtest
+address_msga: .word msga
+address_msgb: .word msgb
+address_msgc: .word msgc
+address_msghours: .word msghours
+address_costdisplay: .word costdisplay
+address_scanc: .word scanc
+address_scand: .word scand
+address_choice: .word choice
+address_hours: .word hours
+address_cost: .word cost
 address_return: .word return
 
 /* External */

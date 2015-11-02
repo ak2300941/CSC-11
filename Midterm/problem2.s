@@ -30,7 +30,7 @@ costdisplay: .asciz "Monthly Cost: %d\n"
 
 /* Format Pattern */
 .balign 4
-scanc: .asciz "%c"
+scanc: .asciz "%s"
 
 .balign 4
 scand: .asciz "%d"

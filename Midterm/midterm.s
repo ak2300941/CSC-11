@@ -28,6 +28,7 @@ main:
 	/* Exit Setup */
 	LDR R1, address_return
 	STR LR ,[R1]
+again:
 	/* Display Message */
 	LDR R0, address_msg1
 	BL printf
@@ -53,13 +54,13 @@ exit:
 
 Function1:
 	BL Problem1
-	BL main
+	BL again
 Function2:
 	BL Problem2
-	BL main
+	BL again
 Function3:
 	BL Problem3
-	BL main
+	BL again
 
 address_msg1: .word msg1
 address_scand: .word scand

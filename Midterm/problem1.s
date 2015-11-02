@@ -37,13 +37,13 @@ pay: .word 0
 salary: .word 0
 
 .balign 4
-return: .word 0
+return2: .word 0
 
 .text
 
-.global main
-main:
-	LDR R1, address_return
+.global Problem1
+Problem1:
+	LDR R1, address_return2
 	STR LR, [R1]
 	/* Display Message */
 	LDR R0, address_msg1
@@ -159,7 +159,7 @@ triple:
 	BAL exit
 
 exit:
-	LDR LR, address_return
+	LDR LR, address_return2
 	LDR LR, [LR]
 	BX LR
 
@@ -173,7 +173,7 @@ address_scanp: .word scanp
 address_hours: .word hours
 address_pay: .word pay
 address_salary: .word salary
-address_return: .word return
+address_return2: .word return2
 /* External */
 .global printf
 .global scanf

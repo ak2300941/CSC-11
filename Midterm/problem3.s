@@ -25,14 +25,14 @@ input: .word 0
 output: .word 0
 
 .balign 4
-return: .word 0
+return4: .word 0
 
 .text
 
-.global main
-main:
+.global Problem3
+Problem3:
 	/* Exit setup */
-	LDR R1, address_return
+	LDR R1, address_return4
 	STR LR, [R1]
 	/* Display Message */
 	LDR R0, address_msg1
@@ -81,7 +81,7 @@ forloop:
 	BAL exit
 
 exit:
-	LDR LR, address_return
+	LDR LR, address_return4
 	LDR LR, [LR]
 	BX LR
 
@@ -90,7 +90,7 @@ address_msg2: .word msg2
 address_scanp: .word scanp
 address_input: .word input
 address_output: .word output
-address_return: .word return
+address_return4: .word return4
 
 /* External */
 .global printf

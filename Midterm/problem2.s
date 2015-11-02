@@ -46,14 +46,14 @@ hours: .word 0
 cost: .word 0
 
 .balign 4
-return: .word 0
+return3: .word 0
 
 .text
 
-.global main
-main:
+.global Problem2
+Problem2:
 	/* Exit Setup */
-	LDR R1, address_return
+	LDR R1, address_return3
 	STR LR, [R1]
 	/* Display Message */
 	LDR R0, address_msg1
@@ -267,7 +267,7 @@ cthird:
 	BAL exit
 exit:
 	/* Exit */
-	LDR LR, address_return
+	LDR LR, address_return3
 	LDR LR, [LR]
 	BX LR
 
@@ -283,7 +283,7 @@ address_scand: .word scand
 address_choice: .word choice
 address_hours: .word hours
 address_cost: .word cost
-address_return: .word return
+address_return3: .word return3
 
 /* External */
 .global printf

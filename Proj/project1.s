@@ -20,9 +20,6 @@ msg3: .asciz "\nPlayer 1: "
 msg4: .asciz "\nPlayer 2: "
 
 .balign 4
-msgtie: .asciz "Game is a Tie\n"
-
-.balign 4
 msgp1win: .asciz "Player 1 Wins\n"
 
 .balign 4
@@ -505,7 +502,11 @@ turncheck:
 	CMP R1, #56
         BEQ gamestart1
  	CMP R1, #57
-	BEQ tie
+	BEQ tiefunction
+
+tiefunction:
+	BL tie
+	BAL exit
 
 winconditions:
 	/* Check Win Conditions */
@@ -740,10 +741,6 @@ p2check14:
 	CMP R0, #79
 	BEQ p2win
 	BAL part5
-tie:
-	LDR R0, address_msgtie
-	BL printf
-	BAL exit
 
 p1win:
 	LDR R0, address_msgp1win
@@ -758,7 +755,6 @@ address_msg1: .word msg1
 address_msg2: .word msg2
 address_msg3: .word msg3
 address_msg4: .word msg4
-address_msgtie: .word msgtie
 address_msgp1win: .word msgp1win
 address_msgp2win: .word msgp2win
 address_pic: .word pic

@@ -529,7 +529,23 @@ part3:
 	BAL part4
 part4:
 	/* Check Player 2 */
-	BAL turncheck
+	LDR R0, address_n1
+        LDR R0, [R0]
+        CMP R0, #79
+        BEQ p2check1
+        BAL part5
+part5:
+	LDR R0, address_n9
+        LDR R0, [R0]
+        CMP R0, #79
+        BEQ p2check9
+        BAL part6
+part6:
+        LDR R0, address_n5
+        LDR R0, [R0]
+        CMP R0, #79
+        BEQ p2check5
+        BAL turncheck
  
 p1check5:
 	LDR R0, address_n2

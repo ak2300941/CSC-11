@@ -644,6 +644,102 @@ p1check14:
 	BEQ p1win
 	BAL part2
 
+p2check5:
+	LDR R0, address_n2
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check52
+	LDR R0, address_n6
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check56
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check53
+	BAL turncheck
+
+p2check53:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL turncheck
+
+p2check52:
+	LDR R0, address_n8
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL turncheck
+
+p2check56:
+	LDR R0, address_n4
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL turncheck
+
+p2check9:
+	LDR R0, address_n8
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check98
+	LDR R0, address_n6
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check96
+	BAL part6
+
+p2check96:
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL part6
+
+p2check98:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL part6
+
+p2check1:
+	LDR R0, address_n2
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check12
+	LDR R0, address_n5
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check15
+	LDR R0, address_n4
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2check14
+	BAL part5
+
+p2check12:
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL part5
+
+p2check15:
+	LDR R0, address_n9
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL part5
+
+p2check14:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #79
+	BEQ p2win
+	BAL part5
 tie:
 	LDR R0, address_msgtie
 	BL printf
@@ -654,6 +750,10 @@ p1win:
 	BL printf
 	BAL exit
 
+p2win:
+	LDR R0, address_msgp2win
+	BL printf
+	BAL exit
 address_msg1: .word msg1
 address_msg2: .word msg2
 address_msg3: .word msg3

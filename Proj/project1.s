@@ -23,6 +23,12 @@ msg4: .asciz "\nPlayer 2: "
 msgtie: .asciz "Game is a Tie\n"
 
 .balign 4
+msgp1win: .asciz "Player 1 Wins\n"
+
+.balign 4
+msgp2win: .asciz "Player 2 Wins\n"
+
+.balign 4
 pic: .asciz "\n|%c|%c|%c|"
 
 .balign 4
@@ -473,7 +479,11 @@ gamepic:
 	/* Space */
 	LDR R0, address_space
 	BL printf
-	/* Check */
+	/* Check Win Conditions */
+	BAL winconditions
+
+turncheck:
+	/* Check Turns */
 	LDR R1, address_turn
 	LDR R1, [R1]
 	CMP R1, #48		@#48 = 0 (Turn 0)
@@ -496,8 +506,135 @@ gamepic:
         BEQ gamestart1
  	CMP R1, #57
 	BEQ tie
+
+winconditions:
+	/* Check Win Conditions */
+	/* Check Player 1 */
+        LDR R0, address_n1
+        LDR R0, [R0]
+        CMP R0, #88
+        BEQ p1check1
+	BAL part2
+part2:
+	LDR R0, address_n9
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check9
+	BAL part3
+part3:
+	LDR R0, address_n5
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check5
+	BAL part4
+part4:
+	/* Check Player 2 */
+	BAL turncheck
+ 
+p1check5:
+	LDR R0, address_n2
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check52
+	LDR R0, address_n6
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check56
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check53
+	BAL part4
+
+p1check53:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part4
+
+p1check52:
+	LDR R0, address_n8
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part4
+
+p1check56:
+	LDR R0, address_n4
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part4
+
+p1check9:
+	LDR R0, address_n8
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check98
+	LDR R0, address_n6
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check96
+	BAL part3
+
+p1check96:
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part3
+
+p1check98:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part3
+
+p1check1:
+	LDR R0, address_n2
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check12
+	LDR R0, address_n5
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check15
+	LDR R0, address_n4
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1check14
+	BAL part2
+
+p1check12:
+	LDR R0, address_n3
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part2
+
+p1check15:
+	LDR R0, address_n9
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part2
+
+p1check14:
+	LDR R0, address_n7
+	LDR R0, [R0]
+	CMP R0, #88
+	BEQ p1win
+	BAL part2
+
 tie:
 	LDR R0, address_msgtie
+	BL printf
+	BAL exit
+
+p1win:
+	LDR R0, address_msgp1win
 	BL printf
 	BAL exit
 
@@ -506,6 +643,8 @@ address_msg2: .word msg2
 address_msg3: .word msg3
 address_msg4: .word msg4
 address_msgtie: .word msgtie
+address_msgp1win: .word msgp1win
+address_msgp2win: .word msgp2win
 address_pic: .word pic
 address_space: .word space
 address_msgtest: .word msgtest

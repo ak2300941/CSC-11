@@ -31,9 +31,6 @@ message5: .asciz "Display Degree Fahrenheit to Degree Centigrade\n"
 .balign 4
 display1: .asciz "F = %d, C = %d\n"
 
-.balign 4
-display2: .asciz "C = %d, F = %d\n"
-
 /* Message to Check Input */
 .balign 4
 testmsg: .asciz "%d and %d\n"
@@ -112,27 +109,42 @@ exit:
 Problem1:
 	LDR R0, address_of_message4
 	BL printf
-	LDR R6, address_of_beg
+	LDR R5, address_of_beg
+	LDR R5, [R5]
+	LDR R6, address_of_end
 	LDR R6, [R6]
-	LDR R2, address_of_end
-	LDR R2, [R2]
-forloop1:
-	MOV R3, #9
-	MOV R4, #5
-	MOV R5, #32
-	DIV R0, R3, R4
-	MUL R0, R0, R6
-	ADD R0, R0, R5
+Loop1:
+	LDR R3, =0x1CCD
 	LDR R0, address_display1
+	MOV R2, R5
+	MUL R1, R5, R3
+	LSR R1, #12
+	ADD R1, R1, #32
 	BL printf
-	ADD R6, R6, #1
-	CMP R6, R2
-	BLE forloop1
+	ADD R5, R5, #1
+	CMP R5, R6
+	BLE Loop1
 	BAL exit
 
 Problem2:
 	LDR R0, address_of_message5
+        BL printf
+        LDR R5, address_of_beg
+        LDR R5, [R5]
+        LDR R6, address_of_end
+        LDR R6, [R6]
+
+Loop2:
+	LDR R3, =0x008E38
+	LDR R0, address_display1
+	MOV R1, R5
+	SUB R4, R5, #32
+	MUL R2, R1, R4
+	LSR R2, #20
 	BL printf
+	ADD R5, R5, #1
+	CMP R5, R6
+	BLE Loop2
 	BAL exit
 
 address_of_message1: .word message1
@@ -141,7 +153,6 @@ address_of_message3: .word message3
 address_of_message4: .word message4
 address_of_message5: .word message5
 address_display1: .word display1
-address_display2: .word display2
 address_of_testmsg: .word testmsg
 address_of_testcho: .word testcho
 address_of_scan_pattern1: .word scan_pattern1
@@ -150,6 +161,7 @@ address_of_beg: .word beg
 address_of_end: .word end
 address_of_choice: .word choice
 address_return: .word return
+
 /* External */
 .global printf
 .global scanf

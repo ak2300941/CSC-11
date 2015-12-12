@@ -56,8 +56,7 @@ main:
 	BL srand
 	/* Make Random Number */
 	BL rand
-	MOV R1, #1000
-	BL mod
+	
 	
 	/* Exit */
 	LDR LR, address_return

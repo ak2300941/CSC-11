@@ -1,0 +1,149 @@
+/*	Andrew Kim
+	November 8th, 2015
+	Project 1
+	Tic Tac Toe
+*/
+
+.data
+
+/* Messages */
+.balign 4
+msg1: .asciz "\nTic Tac Toe\n1. Start Game\n2. End Game\nEnter Choice: "
+
+.balign 4
+msg2: .asciz "\nTic Tac Toe\nUse # from 1 to 9 as input\n\n"
+
+.balign 4
+pic: .asciz "\n|%c|%c\n|%c|%c|%c|\n|%c|%c|%c|\n"
+
+.balign 4
+msgtest: .asciz "Number stored is %c\n"
+
+/* Format Pattern */
+.balign 4
+scand: .asciz "%d"
+
+.balign 4
+scanc: .asciz "%s"
+
+/* Store */
+.balign 4
+choice: .word 0
+
+.balign 4
+n1: .word '1'	@49
+
+.balign 4
+n2: .word '2'	@50
+
+.balign 4
+n3: .word '3'	@51
+
+.balign 4
+n4: .word '4'	@52
+
+.balign 4
+n5: .word '5'	@53
+
+.balign 4
+n6: .word '6'	@54
+
+.balign 4
+n7: .word '7'	@55
+
+.balign 4
+n8: .word '8'	@56
+
+.balign 4
+n9: .word '9'	@57
+
+.balign 4
+return: .word 0
+
+.text
+
+.global main
+main:
+	/* Exit Setup */
+	LDR R1, address_return
+	STR LR, [R1]
+
+startmenu:
+	/* Display Message */
+	LDR R0, address_msg1
+	BL printf
+	/* Get Input for Choice */
+	LDR R0, address_scand
+	LDR R1, address_choice
+	BL scanf
+	/* Choice decides */
+	LDR R1, address_choice
+	LDR R1, [R1]
+	CMP R1, #1
+	BEQ game
+	CMP R1, #2
+	BEQ exit
+	BAL exit
+
+exit:
+	/* Exit */
+	LDR LR, address_return
+	LDR LR, [LR]
+	BX LR
+
+game:
+	/* Display Message */
+	LDR R0, address_msg2
+	BL printf
+	/* Test */
+	LDR R0, address_msgtest
+	LDR R1, address_n1
+	LDR R1, [R1]
+	BL printf
+	/* Get Picture of Game */
+	BAL gamepic
+	BAL exit
+gamepic:
+	LDR R0, address_pic
+	LDR R1, address_n1
+	LDR R1, [R1]
+	LDR R2, address_n2
+	LDR R2, [R2]
+	LDR R3, address_n3
+	LDR R3, [R3]
+	LDR R4, address_n4
+	LDR R4, [R4]
+	LDR R5, address_n5
+	LDR R5, [R5]
+	LDR R6, address_n6
+	LDR R6, [R6]
+	LDR R7, address_n7
+	LDR R7, [R7]
+	LDR R8, address_n8
+	LDR R8, [R8]
+	LDR R9, address_n9
+	LDR R9, [R9]
+	BL printf
+	BAL exit
+
+address_msg1: .word msg1
+address_msg2: .word msg2
+address_pic: .word pic
+address_msgtest: .word msgtest
+address_scand: .word scand
+address_scanc: .word scanc
+address_choice: .word choice
+address_n1: .word n1
+address_n2: .word n2
+address_n3: .word n3
+address_n4: .word n4
+address_n5: .word n5
+address_n6: .word n6
+address_n7: .word n7
+address_n8: .word n8
+address_n9: .word n9
+address_return: .word return
+
+/* External */
+.global printf
+.global scanf

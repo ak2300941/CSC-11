@@ -22,7 +22,7 @@ inc: .float 1.0
 .balign 4
 one: .float 1.0
 .balign 4
-check: .float 10.000000
+check: .float 255
 .text
 
 .global main
@@ -51,19 +51,21 @@ loop:
 	LDR R0, =inc
 	VSTR S2, [R0]
 	/* Display */
-	@VCVT.F64.F32 D0, S9
-	@LDR R0, =msg
-	@VMOV R2, R3, D0
-	@BL printf
-	VCVT.F64.F32 D0, S2
-	LDR R0, =test
+	VCVT.F64.F32 D0, S9
+	LDR R0, =msg
 	VMOV R2, R3, D0
 	BL printf
+	/* Check Iterator */
+	@VCVT.F64.F32 D0, S2
+	@LDR R0, =test
+	@VMOV R2, R3, D0
+	@BL printf
 	/* Reload Variables */
 	LDR R0, =inc
 	VLDR S3, [R0]
 	/* Loop Logic */
 	VCMP.F32 S3, S5
+	VMRS APSR_nzcv, FPSCR
 	BLE loop
 
 	POP {IP,PC}

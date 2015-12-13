@@ -1,6 +1,6 @@
 /*
 	Andrew Kim
-	December 11th, 2015
+	December 12th 2015
 	Final
 	Problem 2
 */
@@ -9,22 +9,31 @@
 
 /* Messages */
 .balign 4
-answer: .asciz "Future Value: %f\n"
+pvmsg: .asciz "PV (1000 to 5000) :"
 .balign 4
-testint: .asciz "Interest Rate: %f\n"
+intmsg: .asciz "Interest (5 to 10 percent) :"
+.balign 4
+yearmsg: .asciz "Years (1 to 20) :"
+.balign 4
+answer: .asciz "Value: %f\n"
+/* Format Pattern */
+.balign 4
+scan: .asciz "%f"
+.balign 4
+scand: .asciz "%d"
 /* Store */
 .balign 4
-int: .float 1.05	@Interest
+pv: .float 0
 .balign 4
-intadd: .float 0.0025	@Interest Add
+int: .float 0
 .balign 4
-pvalue: .float 1000.0	@Present Value
+years: .word 0
 .balign 4
-nint: .float 0		@New Interest
+hundred: .float 100
 .balign 4
-fvalue: .float 0.0	@Future Value
+one: .float 1
 .balign 4
-inc: .word 0		@increment
+iter: .word 0
 
 .text
 
@@ -32,56 +41,71 @@ inc: .word 0		@increment
 main:
 	PUSH {IP,LR}
 
-	/* Initialize */
+	/* User input */
+	LDR R0, =pvmsg
+	BL printf
+	LDR R0, =scan
+	LDR R1, =pv
+	BL scanf		@Present Value
+	LDR R0, =intmsg
+	BL printf
+	LDR R0, =scan
+	LDR R1, =int
+	BL scanf		@Interest Value
+	LDR R0, =yearmsg
+	BL printf
+	LDR R0, =scand
+	LDR R1, =years
+	BL scanf		@Years Value
+	/* Turn Interest to Decimal */
 	LDR R0, =int
 	VLDR S0, [R0]		@Interest
-	LDR R0, =intadd
-	VLDR S1, [R0]		@Interest Add
-	LDR R0, =pvalue
-	VLDR S2, [R0]		@Present Value
-	LDR R0, =fvalue
-	VLDR S3, [R0]		@Future Value
-	/* Loop */
-	MOV R1, #1
+	LDR R0, =hundred
+	VLDR S1, [R0]		@100
+	VDIV.F32 S0, S0, S1	@Turn to decimal to solve equation
+	/* Store Interest */
+	LDR R0, =int
+	VSTR S0, [R0]
+	/* Loop Logic */
+	MOV R1, #1		@Iterator
+	/* Initialize */
+	LDR R0, =pv
+	VLDR S2, [R0]		@PV
 loop:
-	/* Calculation */
-	VMUL.F32 S4, S0, S2	@PV * Interest
-	VADD.F32 S5, S4, S3	@FV + (PV * Interest)
-	VADD.F32 S6, S0, S1	@Increst + Added Interest = New Interest
+	/* Initialize */
+	LDR R0, =years
+	VLDR S3, [R0]		@Years
+	LDR R0, =one
+	VLDR S4, [R0]		@1
+ 	/* Calculate */
+	VADD.F32 S5, S4, S0	@1 + Interest
+	VMUL.F32 S6, S2, S5	@PV * (1 + Interest)
+	/* Loop Logic */
+	ADD R1, R1, #1		@Increment Counter +1
 	/* Store Variables */
-	LDR R0, =inc
-	STR R1, [R0]		@Store Increment
-	LDR R0, =nint
-	VSTR S6, [R0]		@Store New Interest
-	LDR R0, =fvalue
-	VSTR S5, [R0]		@Store Future Value
+	LDR R0, =pv
+	VSTR S6, [R0]
+	LDR R0, =iter
+	STR R1, [R0]
 	/* Display */
-	VCVT.F64.F32 D0, S5	@Convert to Integer
+	VCVT.F64.F32 D0, S6
 	LDR R0, =answer
 	VMOV R2, R3, D0
 	BL printf
-	/* Check Interest */
-	@VCVT.F64.F32 D0, S6
-	@LDR R0, =testint
-	@VMOV R2, R3, D0
-	@BL printf
 	/* Reload Variables */
-	LDR R0, =inc
-	LDR R1, [R0]		@Reload Increment Counter
-	LDR R0, =nint
-	VLDR S0, [R0]		@Reload Interest
-	LDR R0, =intadd
-	VLDR S1, [R0]		@Reload Interest Add
-	LDR R0, =fvalue
-	VLDR S3, [R0]		@Reload Future Value
-	LDR R0, =pvalue
-	VLDR S2, [R0]		@Reload Present Value
-	ADD R1, R1, #1		@Increment Counter +1
-	CMP R1, #20
+	LDR R0, =pv
+	VLDR S2, [R0]		@PV
+	LDR R0, =int
+	VLDR S0, [R0]		@Interest
+	LDR R0, =iter
+	LDR R1, [R0]		@Iterator
+	LDR R0, =years
+	LDR R5,[R0]		@Years
+	/* Loop Logic */
+	CMP R1, R5
 	BLE loop
 
-	POP {IP,PC}
+	POP {IP, PC}
 
 .global printf
 .global scanf
-

@@ -18,11 +18,11 @@ a: .float 0.073
 .balign 4
 b: .float 0.876
 .balign 4
-inc: .float 1.0
+inc: .float 0.0
 .balign 4
 one: .float 1.0
 .balign 4
-check: .float 255
+check: .float 255.0
 .text
 
 .global main

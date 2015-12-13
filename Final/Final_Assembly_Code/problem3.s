@@ -19,7 +19,7 @@ inc: .word 0
 main:
 	PUSH {IP,LR}
 	/* Loop Logic */
-	MOV R3, #1		@Increment
+	MOV R3, #0		@Increment
 loop:
 	/* Initialize */
 	LDR R1, =0x12b0		@Variable a BP-16

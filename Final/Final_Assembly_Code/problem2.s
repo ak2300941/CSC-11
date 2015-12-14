@@ -37,8 +37,8 @@ iter: .word 0
 
 .text
 
-.global main
-main:
+.global problem2
+problem2:
 	PUSH {IP,LR}
 
 	/* User input */

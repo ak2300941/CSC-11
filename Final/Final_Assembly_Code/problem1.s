@@ -32,8 +32,8 @@ scan: .asciz "%d"
 scans: .asciz "%s"
 .text
 
-.global main
-main:
+.global problem1
+problem1:
 	PUSH {IP,LR}
 
 start:
@@ -45,6 +45,11 @@ start:
 	BL time
 	BL srand
 	BL rand
+	/* Recount Guess to 10 when played again */
+	LDR R5, =guesses
+	LDR R6, [R5]
+	MOV R6, #10
+	STR R6, [R5]
 	/* Get Random Number */
 	MOV R1, R0
 	LDR R2, =thousand

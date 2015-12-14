@@ -1,2 +1,5 @@
 all:
-	gcc -o problem1 problem1.s divMod.s
+	gcc -o final *.s
+	rm -f *.o
+clean:
+	rm -vf *.o

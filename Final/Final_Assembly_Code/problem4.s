@@ -25,8 +25,8 @@ one: .float 1.0
 check: .float 255.0
 .text
 
-.global main
-main:
+.global problem4
+problem4:
 	PUSH {IP,LR}
 loop:
 	/* Initialize */

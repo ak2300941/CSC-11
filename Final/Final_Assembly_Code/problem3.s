@@ -15,8 +15,8 @@ inc: .word 0
 
 .text
 
-.global main
-main:
+.global problem3
+problem3:
 	PUSH {IP,LR}
 	/* Loop Logic */
 	MOV R3, #0		@Increment

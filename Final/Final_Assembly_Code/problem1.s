@@ -1,6 +1,6 @@
 /*
 	Andrew Kim
-	December 11th, 2015
+	December 13th, 2015
 	Final
 	Problem 1
 */
@@ -8,75 +8,130 @@
 .data
 
 /* Messages */
-.balign 4 
-title: .asciz "Guess the Number\nI have a number between 1 and 1000 can you guess my number?\nYou will be given a maximum of 10 guesses. Please type your first guess.\n"
-
-.balign 4
-msg1: .asciz "Guess: "
-
-.balign 4
-msg2: .asciz "Congratulations, You guessed the number!\n"
-
-.balign 4
-msg3: .asciz "Too High. Try again.\n"
-
-.balign 4
-msg4: .asciz "Too Low. Try again.\n"
-
-.balign 4
-test:  .asciz "%d\n"
-
-/* Format Pattern */
-.balign 4
-scan: .asciz "%d"
-
+msggame: .asciz "Guess the Number\nI have a number between 1 and 1000 can you guess my number?\nYou will be given a maximum of 10 guesses. Please type your first guess.\n"
+win: .asciz "Congratulations, You guessed the number!\nWould you like to play again(y or n)?\n"
+low: .asciz "Too Low. Try again.\n"
+high: .asciz "Too High. Try again.\n"
+many: .asciz "Too Many Tries.\n"
+test: .asciz "Random Number: %d\n"
+choose: .asciz "Guess: "
 /* Store */
 .balign 4
-store: .word 1000
-
+player: .word 0
 .balign 4
 number: .word 0
-
 .balign 4
-return: .word 0
-
+guesses: .word 10
+.balign 4
+thousand: .word 1000
+.balign 4
+yes: .word 'y
+/* Format = */
+.balign 4
+scan: .asciz "%d"
+scans: .asciz "%s"
 .text
 
 .global main
 main:
-	/* Exit Setup */
-	LDR R1, address_return
-	STR LR, [R1]
-	/* Display Message */
-	LDR R0, address_title
+	PUSH {IP,LR}
+
+start:
+	/* Display */
+	LDR R0, =msggame
 	BL printf
-	/* Set Timer Seed */
+	/* Initialize */
 	MOV R0, #0
 	BL time
 	BL srand
-	/* Make Random Number */
 	BL rand
-	
-	
-	/* Exit */
-	LDR LR, address_return
-	LDR LR, [LR]
-	BX LR
+	/* Get Random Number */
+	MOV R1, R0
+	LDR R2, =thousand
+	LDR R2, [R2]
+	BL divMod
+	ADD R1, R1, #1
+	/* Store Number */
+	LDR R0, =number
+	STR R1, [R0]
+	/* Display Random Number */
+	@LDR R0, =test
+	@BL printf
+loop:
+	/* Display */
+	LDR R0, =choose
+	BL printf
+	/* Input */
+	LDR R0, =scan
+	LDR R1, =player
+	BL scanf
+	LDR R0, =player
+	LDR R0, [R0]			@Player #
+	LDR R1, =number
+	LDR R1, [R1]			@Number
+	CMP R0, R1
+	BEQ victory			@Player = Number
+	CMP R0, R1
+	BGT highv
+	CMP R0, R1
+	BLT lowv
 
-address_title: .word title
-address_msg1: .word msg1
-address_msg2: .word msg2
-address_msg3: .word msg3
-address_msg4: .word msg4
-address_test: .word test
-address_scan: .word scan
-address_store: .word store
-address_number: .word number
-address_return: .word return
+lowv:
+	/* Guess-- */
+	LDR R0, =guesses
+	LDR R1, [R0]
+	SUB R1, R1, #1
+	STR R1, [R0]
+	CMP R1, #0
+	BLE bend
+	/* Too Low Message */
+	LDR R0, =low
+	BL printf
+	BAL loop
 
-/* External */
+highv:
+	/* Guess -- */
+	LDR R0, =guesses
+	LDR R1, [R0]
+	SUB R1, R1, #1
+	STR R1, [R0]
+	CMP R1, #0
+	BLE bend
+	/* Too High Message */
+	LDR R0, =high
+	BL printf
+	BAL loop
+
+victory:
+	/* Win Message */
+	LDR R0, =win
+	BL printf
+	/* Choice to Play Again */
+	LDR R0, =scans
+	LDR R1, =player
+	BL scanf
+	LDR R0, =player
+	LDR R0, [R0]
+	LDR R1, =yes
+	LDR R1, [R1]
+	CMP R0, R1
+	BEQ start
+	BAL end
+
+end:
+	POP {IP,PC}
+
+bend:
+	LDR R0, =many
+	BL printf
+
+	POP {IP,PC}
+
 .global printf
 .global scanf
-.global rand
-.global srand
+.global divMod
 .global time
+.global srand
+.global ramd
+
+

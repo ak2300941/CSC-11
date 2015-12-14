@@ -87,6 +87,20 @@ n9: .word '9'	@57
 .balign 4
 return: .word 0
 
+/* Project 2 Stuff */
+againmsg: .asciz "Play again? (y, n): "
+.balign 4
+yes: .word 'y'
+.balign 4
+percent: .float 0
+.balign 4
+player1pt: .float 0
+.balign 4
+player2pt: .float 0
+.balign 4
+one: .float 1
+.balign 4
+hundred: .float 100
 .text
 
 .global main
@@ -745,12 +759,70 @@ p2check14:
 p1win:
 	LDR R0, address_msgp1win
 	BL printf
-	BAL exit
+	LDR R0, =player1pt
+	VLDR S0, [R0]
+	LDR R0, =one
+	VLDR S1, [R0]
+	VADD.F32 S2, S0, S1		@Increment +1
+	LDR R0, =player1pt
+	VSTR S2, [R0]
+	BAL reset
 
 p2win:
 	LDR R0, address_msgp2win
 	BL printf
-	BAL exit
+	LDR R0, =player2pt
+	VLDR S0, [R0]
+	LDR R0, =one
+	VLDR S1, [R0]
+	VADD.f32 S2, S0, S1
+	LDR R0, =player2pt
+	VSTR S2, [R0]
+	BAL reset
+
+reset:
+	LDR R0, =n1
+	LDR R1, [R0]
+	MOV R1, #'1'
+	STR R1, [R0]		@1
+	LDR R0, =n2
+	LDR R1, [R0]
+	MOV R1, #'2'
+	STR R1, [R0]		@2
+	LDR R0, =n3
+	LDR R1, [R0]
+	MOV R1, #'3'
+	STR R1, [R0]		@3
+	LDR R0, =n4
+	LDR R1, [R0]
+	MOV R1, #'4'
+	STR R1, [R0]		@4
+	LDR R0, =n5
+        LDR R1, [R0]
+        MOV R1, #'5'
+        STR R1, [R0]            @5
+        LDR R0, =n6
+        LDR R1, [R0]
+        MOV R1, #'6'
+        STR R1, [R0]            @6
+        LDR R0, =n7
+        LDR R1, [R0]
+        MOV R1, #'7'
+        STR R1, [R0]            @7
+        LDR R0, =n8
+        LDR R1, [R0]
+        MOV R1, #'8'
+        STR R1, [R0]            @8
+	LDR R0, =n9
+	LDR R1, [R0]
+	MOV R1, #'9'
+	STR R1, [R0]		@9
+	LDR R0, =turn
+	LDR R1, [R0]
+	MOV R1, #'0'
+	STR R1, [R0]
+	BAL startmenu
+
 address_msg1: .word msg1
 address_msg2: .word msg2
 address_msg3: .word msg3

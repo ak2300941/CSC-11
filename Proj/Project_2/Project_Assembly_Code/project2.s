@@ -89,6 +89,9 @@ return: .word 0
 
 /* Project 2 Stuff */
 againmsg: .asciz "Play again? (y, n): "
+msgp1: .asciz "Player 1 Win Percentage %f Percent\n"
+msgp2: .asciz "Player 2 Win Percentage %f Percent\n"
+testf: .asciz "Number %f\n"
 .balign 4
 yes: .word 'y'
 .balign 4
@@ -103,6 +106,12 @@ player2pt: .float 0
 one: .float 1
 .balign 4
 hundred: .float 100
+.balign 4
+array: .skip 12
+.balign 4
+p1str: .float 0
+.balign 4
+p2str: .float 0
 .text
 
 .global main
@@ -129,6 +138,53 @@ startmenu:
 	BAL exit
 
 exit:
+	/* Add Pts for both players */
+	LDR R0, =player1pt
+	VLDR S0, [R0]
+	LDR R0, =player2pt
+	VLDR S1, [R0]
+	LDR R0, =array
+	VSTR S0, [R0]
+	LDR R0, =array
+	VSTR S1, [R0, #4]
+	LDR R0, =array
+	LDR R1, =hundred
+	VLDR S2, [R1]
+	VSTR S2, [R0, #8]
+	/* Test Variables */
+	@VCVT.F64.F32 D0, S0
+	@LDR R0, =testf
+	@VMOV R2, R3, D0
+	@BL printf
+	/* Calculate */
+	LDR R0, =array
+	VLDR S0, [R0]
+	LDR R0, =array
+	VLDR S1, [R0, #4]
+	LDR R0, =array
+	VLDR S2, [R0, #8]
+	/* Get Total Played */
+	VADD.F32 S3, S0, S1		@Total
+	VDIV.F32 S4, S0, S3		@Player1/Total
+	VDIV.F32 S5, S1, S3		@Player2/Total
+	VMUL.F32 S6, S4, S2		@Turn to Percent P1
+	VMUL.F32 S7, S5, S2		@Turn to Percent P2
+	/* Store */
+	LDR R0, =p1str
+	VSTR S6, [R0]
+	LDR R0, =p2str
+	VSTR S7, [R0]
+	/* Display */
+	VCVT.F64.F32 D0, S6
+	LDR R0, =msgp1
+	VMOV R2, R3, D0
+	BL printf
+	LDR R0, =p2str
+	VLDR S0, [R0]
+	VCVT.F64.F32 D0, S0
+	LDR R0, =msgp2
+	VMOV R2, R3, D0
+	BL printf
 	/* Exit */
 	LDR LR, address_return
 	LDR LR, [LR]
@@ -768,6 +824,11 @@ p1win:
 	VADD.F32 S2, S0, S1		@Increment +1
 	LDR R0, =player1pt
 	VSTR S2, [R0]
+	/* Test Variable */
+	@VCVT.F64.F32 D0, S2
+	@LDR R0, =testf
+	@VMOV R2, R3, D0
+	@BL printf
 	/* Play Again */
 	LDR R0, =againmsg
 	BL printf

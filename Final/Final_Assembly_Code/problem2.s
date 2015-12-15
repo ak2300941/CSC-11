@@ -34,7 +34,8 @@ hundred: .float 100
 one: .float 1
 .balign 4
 iter: .word 0
-
+.balign 4
+array: .skip 80
 .text
 
 .global problem2
@@ -85,13 +86,17 @@ loop:
 	/* Store Variables */
 	LDR R0, =pv
 	VSTR S6, [R0]
+	/* Store Answer in Array */
+	LDR R0, =array
+	VSTR S6, [R0]
+	/* Store Other Variables */
 	LDR R0, =iter
 	STR R1, [R0]
 	/* Display */
-	VCVT.F64.F32 D0, S6
-	LDR R0, =answer
-	VMOV R2, R3, D0
-	BL printf
+	@VCVT.F64.F32 D0, S6
+	@LDR R0, =answer
+	@VMOV R2, R3, D0
+	@BL printf
 	/* Reload Variables */
 	LDR R0, =pv
 	VLDR S2, [R0]		@PV
@@ -103,6 +108,27 @@ loop:
 	LDR R5,[R0]		@Years
 	/* Loop Logic */
 	CMP R1, R5
+	BLE loop
+	/* Loop to Display Answer from array */
+	/* Iteratior 1 */
+	MOV R1, #1
+	LDR R0, =iter
+	STR R1, [R0]
+	/* Display */
+	LDR R0, =array
+	VLDR S0, [R0]
+	VCVT.F64.F32 D0, S0
+	LDR R0, =answer
+	VMOV R2, R3, D0
+	BL printf
+	/* Loop */
+	LDR R0, =iter
+	LDR R1, [R0]
+	ADD R1, R1, #1
+	STR R1, [R0]
+	LDR R0, =years
+	LDR R2, [R0]
+	CMP R1, R2
 	BLE loop
 
 	POP {IP, PC}

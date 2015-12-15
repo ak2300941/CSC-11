@@ -92,6 +92,8 @@ againmsg: .asciz "Play again? (y, n): "
 .balign 4
 yes: .word 'y'
 .balign 4
+choicep: .word 0
+.balign 4
 percent: .float 0
 .balign 4
 player1pt: .float 0
@@ -766,7 +768,19 @@ p1win:
 	VADD.F32 S2, S0, S1		@Increment +1
 	LDR R0, =player1pt
 	VSTR S2, [R0]
-	BAL reset
+	/* Play Again */
+	LDR R0, =againmsg
+	BL printf
+	LDR R0, =scanc
+	LDR R1, =choicep
+	BL scanf
+	LDR R0, =choicep
+	LDR R1, [R0]
+	LDR R0, =yes
+	LDR R2, [R0]
+	CMP R1, R2
+	BEQ reset
+	BAL exit
 
 p2win:
 	LDR R0, address_msgp2win
@@ -778,7 +792,19 @@ p2win:
 	VADD.f32 S2, S0, S1
 	LDR R0, =player2pt
 	VSTR S2, [R0]
-	BAL reset
+	/* Play Again */
+        LDR R0, =againmsg
+        BL printf
+        LDR R0, =scanc
+        LDR R1, =choicep
+        BL scanf
+        LDR R0, =choicep
+        LDR R1, [R0]
+        LDR R0, =yes
+        LDR R2, [R0]
+        CMP R1, R2
+        BEQ reset
+        BAL exit
 
 reset:
 	LDR R0, =n1

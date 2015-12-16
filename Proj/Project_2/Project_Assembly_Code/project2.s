@@ -117,9 +117,9 @@ p2str: .float 0
 .global main
 main:
 	/* Exit Setup */
-	LDR R1, address_return
-	STR LR, [R1]
-
+	@LDR R1, address_return
+	@STR LR, [R1]
+	PUSH {IP,LR}
 startmenu:
 	/* Display Message */
 	LDR R0, address_msg1
@@ -186,9 +186,10 @@ exit:
 	VMOV R2, R3, D0
 	BL printf
 	/* Exit */
-	LDR LR, address_return
-	LDR LR, [LR]
-	BX LR
+	@LDR LR, address_return
+	@LDR LR, [LR]
+	@BX LR
+	POP {IP,PC}
 
 game:
 	/* Display Message */

@@ -96,14 +96,25 @@ void problem1()
 void problem2()
 {
     //Compound Interest Problem
-    float PV = 1000;
-    float FV = 0;
-    float Interest = 0.05;
-    for(int i = 1; i <= 20; ++i)
+    float PV, Interest, percent;
+    float array[20];
+    int Year;
+    cout << "PV: ";
+    cin >> PV;
+    cout << "Year: ";
+    cin >> Year;
+    cout << "Interest: ";
+    cin >> Interest;
+    percent = Interest/100;
+    for(int i = 1; i <= Year; ++i)
     {
-        FV = FV + (PV * (1 + Interest));
-        cout << "Year " << i << ": $" << FV << endl;
-        Interest = Interest + .0025;
+        array[i] = PV * (1 + percent);
+        PV = array[i];
+    }
+    //Display
+    for(int i = 1; i <= Year; ++i)
+    {
+        cout << "FV: "<< array[i] << endl;
     }
     cout << endl;
 }

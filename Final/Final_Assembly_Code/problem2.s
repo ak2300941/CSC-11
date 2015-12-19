@@ -8,14 +8,11 @@
 .data
 
 /* Messages */
-.balign 4
 pvmsg: .asciz "PV (1000 to 5000) :"
-.balign 4
 intmsg: .asciz "Interest (5 to 10 percent) :"
-.balign 4
 yearmsg: .asciz "Years (1 to 20) :"
-.balign 4
 answer: .asciz "Value: %f\n"
+test: .asciz "Iterator %d\n"
 /* Format Pattern */
 .balign 4
 scan: .asciz "%f"
@@ -34,6 +31,8 @@ hundred: .float 100
 one: .float 1
 .balign 4
 iter: .word 0
+.balign 4
+iter2: .word 0
 .balign 4
 array: .skip 80
 .text
@@ -81,14 +80,15 @@ loop:
  	/* Calculate */
 	VADD.F32 S5, S4, S0	@1 + Interest
 	VMUL.F32 S6, S2, S5	@PV * (1 + Interest)
-	/* Loop Logic */
-	ADD R1, R1, #1		@Increment Counter +1
 	/* Store Variables */
 	LDR R0, =pv
 	VSTR S6, [R0]
 	/* Store Answer in Array */
 	LDR R0, =array
-	VSTR S6, [R0]
+	VMOV R5, S6
+	STR R5, [R0, R1, LSL #2]
+	/* Loop Logic */
+	ADD R1, R1, #1		@Increment Counter +1
 	/* Store Other Variables */
 	LDR R0, =iter
 	STR R1, [R0]
@@ -105,31 +105,33 @@ loop:
 	LDR R0, =iter
 	LDR R1, [R0]		@Iterator
 	LDR R0, =years
-	LDR R5,[R0]		@Years
+	LDR R5, [R0]		@Years
 	/* Loop Logic */
 	CMP R1, R5
 	BLE loop
-	/* Loop to Display Answer from array */
-	/* Iteratior 1 */
-	MOV R1, #1
-	LDR R0, =iter
-	STR R1, [R0]
+	/* Iterator #1 */
+	MOV R6, #1
+	LDR R7, =iter2
+	STR R6, [R7]
+displayloop:
 	/* Display */
-	LDR R0, =array
-	VLDR S0, [R0]
-	VCVT.F64.F32 D0, S0
+	/* Loop */
 	LDR R0, =answer
+	LDR R5, =array
+	LDR R4, [R5, R6, LSL #2]
+	VMOV S0, R4
+	VCVT.F64.F32 D0, S0
 	VMOV R2, R3, D0
 	BL printf
-	/* Loop */
-	LDR R0, =iter
-	LDR R1, [R0]
-	ADD R1, R1, #1
-	STR R1, [R0]
-	LDR R0, =years
-	LDR R2, [R0]
-	CMP R1, R2
-	BLE loop
+	/* Reload */
+	LDR R7, =iter2
+	LDR R6, [R7]
+	ADD R6, R6, #1
+	STR R6, [R7]
+	LDR R8, =iter
+	LDR R9, [R8]
+	CMP R6, R9		@i <= year
+	BLT displayloop
 
 	POP {IP, PC}
 

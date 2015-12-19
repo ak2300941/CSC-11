@@ -69,3 +69,7 @@ Function4:
 
 .global printf
 .global scanf
+.global problem1
+.global problem2
+.global problem3
+.global problem4

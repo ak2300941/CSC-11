@@ -22,12 +22,14 @@ inc: .float 0.0
 .balign 4
 one: .float 1.0
 .balign 4
-check: .float 255.0
+check: .float 255
 .text
 
 .global problem4
 problem4:
 	PUSH {IP,LR}
+	MOV R5, #1 		@Increment not in float
+
 loop:
 	/* Initialize */
 	LDR R0, =a
@@ -35,8 +37,10 @@ loop:
 	LDR R0, =b
 	VLDR S1, [R0]		@Variable b
 	LDR R0, =inc
-	VLDR S3, [R0]		@Increment
-	LDR R0, =one
+	@VLDR S3, [R0]		@Increment
+	@LDR R0, =one
+	VMOV S3, R5
+	VCVT.F32.S32 S3, S3	@Increment
 	VLDR S4, [R0]		@1
 	LDR R0, =check
 	VLDR S5, [R0]		@255
@@ -46,7 +50,8 @@ loop:
 	VMUL.F32 S8, S1, S3	@b * i
 	VADD.F32 S9, S7, S8	@(a * (i * i)) + (b * i)
 	/* Loop Logic */
-	VADD.F32 S2, S3, S4		@Increment Counter +1
+	@VADD.F32 S2, S3, S4		@Increment Counter +1
+	ADD R5, R5, #1
 	/* Store Variables */
 	LDR R0, =inc
 	VSTR S2, [R0]
@@ -64,8 +69,9 @@ loop:
 	LDR R0, =inc
 	VLDR S3, [R0]
 	/* Loop Logic */
-	VCMP.F32 S3, S5
-	VMRS APSR_nzcv, FPSCR
+	@VCMP.F32 S3, S5
+	@VMRS APSR_nzcv, FPSCR
+	CMP R5, #255
 	BLE loop
 
 	POP {IP,PC}
